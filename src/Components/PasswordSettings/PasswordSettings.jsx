@@ -10,25 +10,24 @@ const PasswordSettings = ({ setGeneratedPassword }) => {
   const [passwordStrength, setPasswordStrength] = useState("WEAK");
 
   useEffect(() => {
+    console.log(passwordLength, includedCharacters);
     calculatePasswordStrength();
   }, [passwordLength, includedCharacters]);
 
   function calculatePasswordStrength() {
     const values = Object.values(includedCharacters);
-    let toggled = 0;
-    values.forEach((value) => {
-      if (value) {
-        toggled += 1;
-      }
-    });
-    if (passwordLength < 8 || values.every((val) => val === false)) {
+    let toggled = values.filter((val) => val === true).length;
+    console.log(passwordLength, toggled);
+    if (passwordLength < 8 || toggled === 0) {
+      console.log("TOO WEAK");
       setPasswordStrength("TOO WEAK!");
-    }
-    if (passwordLength < 8 && values.some((val) => val === true)) {
+      return;
+    } else if (toggled === 1) {
+      console.log("WEAK");
       setPasswordStrength("WEAK");
       return;
     }
-    if (toggled === 3) {
+    if (toggled === 2 || toggled === 3) {
       setPasswordStrength("MEDIUM");
     }
     if (toggled === 4) {
